@@ -3,3 +3,4 @@ We can enter any city name and it will give the weather details of that city.
 If a invalid city name is entered it will display Invalid City Name!
 It makes API request through the openWeather API.
 It displays the temperature, wind speed, humidity and type of weather for a particular city.
+Index.html contains all the html code as well as javascript code and for styling i have used another file
