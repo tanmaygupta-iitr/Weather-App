@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="card">
+        <div class="search">
+            <input type="text" placeholder="Enter City Name" spellcheck="false">
+            <button class="search-btn" ><img src="icons/search.png"></button>
+        </div>
+        <div class="error">
+            <p>Invalid City Name!</p>
+        </div>
+        <div class="weather">
+            <img src="icons/rain.png" class="weather-icon">
+            <h1 class="temp">22°C</h1>
+            <h2 class="city">New York</h2>
+            <div class="details">
+                <div class="col">
+                    <img src="icons/humidity.png">
+                    <div>
+                        <p class="humidity">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="icons/wind.png">
+                    <div>
+                        <p class="wind">15 km/hr</p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const apiKey="3e9e8e6ffca7caaf557395c27e64f726";
+        const apiurl="https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+        const searchInput=document.querySelector(".search input");
+        const searchbtn=document.querySelector(".search button");
+        const weatherIcon=document.querySelector(".weather-icon");
+
+        
+        async function checkWeather(city){
+            //we are creating an async function to fetch our data from the openWeatherAPI
+            //by sending an Api request to get weather details of mentioned city in url
+            const response=await fetch(apiurl+city+`&appid=${apiKey}`);
+            //we are sending this request to the HTTP server using the fetch API (the keyword fetch) , js doesnthave the power to send HTTP requests on its own so it uses fetch API to handle and send HTTP (web server) requests.
+            //This sends a request to the API by combining the apiurl and the apiKey.
+            if(response.status==404){//incase someone enters a wrong city name
+                document.querySelector(".error").style.display="block";
+                document.querySelector(".weather").style.display="none";
+            }else{
+                var data=await response.json();//response.json() holds the info and we are just tranferring weather details into a new variable for ease of code readability.
+                console.log(data); 
+                //fetching the dataa and updating it:--
+                document.querySelector(".city").innerHTML=data.name;
+                document.querySelector(".temp").innerHTML=Math.round(data.main.temp)+`&deg;C`;
+                document.querySelector(".humidity").innerHTML=data.main.humidity+`%`;
+                document.querySelector(".wind").innerHTML=data.wind.speed+"km/hr"; 
+                //next few if-elses are to update the weather icon
+                if(data.weather[0].main=="Clouds"){
+                    weatherIcon.src="icons/clouds.png";
+                }else if(data.weather[0].main=="Clear"){
+                    weatherIcon.src="icons/clear.png";
+                }
+                else if(data.weather[0].main=="Rain"){
+                    weatherIcon.src="icons/rain.png";
+                }
+                else if(data.weather[0].main=="Mist"){
+                    weatherIcon.src="icons/mist.png";
+                }
+                else if(data.weather[0].main=="Drizzle"){
+                    weatherIcon.src="icons/drizzle.png";
+                }
+                else if(data.weather[0].main=="Rain"){
+                    weatherIcon.src="icons/rain.png";
+                }
+                document.querySelector(".weather").style.display="block";
+                document.querySelector(".error").style.display="none";
+            }
+            searchInput.value="";
+        }
+        searchbtn.addEventListener("click",()=>{//hears the event of clicking on this button
+            checkWeather(searchInput.value);
+        });
+        searchInput.addEventListener("keypress",()=>{
+            if(event.key==="Enter"){
+                checkWeather(searchInput.value);
+            }
+        });
+    </script>
+</body>
+</html>
